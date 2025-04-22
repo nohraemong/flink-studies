@@ -1,0 +1,33 @@
+# cluster.yaml
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: flink-on-eks
+  region: ap-northeast-2
+
+managedNodeGroups:
+  - name: ng-1-workers
+    instanceType: m5.large
+    minSize: 2
+    maxSize: 4
+    desiredCapacity: 3
+    privateNetworking: true
+    labels:
+      lifecycle: ec2-autoscaler
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+
+addons:
+  - name: vpc-cni
+  - name: coredns
+  - name: kube-proxy
+
+vpc:
+  id: "vpc-id"
+  cidr: "CIDR"
+  subnets:
+    private:
+      ap-northeast-2a: { id: subnet-id }
+      ap-northeast-2b: { id: subnet-id }
